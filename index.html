@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="COVID-19 | Estimator" />
+    <title>Covid-19 Estimator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <h1 class="navbar-brand" href="#">Covid-19 Estimator</h1>
+    </nav>
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        make an estimate
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <div class="form-group">
+                              <label for="population">population</label>
+                              <input type="number" class="form-control" id="population" data-population />
+                            </div>
+                            <div class="form-group">
+                                <label for="timeToElapse">time to elapse</label>
+                                <input type="number" class="form-control" id="timeToElapse" data-time-to-elapse />
+                            </div>
+                            <div class="form-group">
+                                <label for="reportedCases">reported cases</label>
+                                <input type="number" class="form-control" id="reportedCases" data-reported-cases />
+                            </div>
+                            <div class="form-group">
+                                <label for="totalHospitalBeds">total hospital beds</label>
+                                <input type="number" class="form-control" id="totalHospitalBeds" data-total-hospital-beds />
+                            </div>
+                            <div class="form-group">
+                                <label for="periodType">period type</label>
+                                <select type="number" class="form-control" id="periodType" data-period-type>
+                                    <option value="days">days</option>
+                                    <option value="weeks">weeks</option>
+                                    <option value="months">months</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="submitBtn" data-go-estimate>Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 d-flex justify-content-center align-items-center">
+                <h1 class="font-weight-light">The result of your estimate will be there</h1>
+            </div>
+        </div>
+    </div>
+
+    <script src="./bundle.js"></script>
+</body>
+</html>
