@@ -1,0 +1,118 @@
+body{
+    background: linear-gradient(to right, rgb(128, 128, 255), rgb(0, 128, 128));
+ }
+ .navbar{
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 60px;
+     background-color: transparent;
+     color: white;
+     padding-top: 1%;
+ }
+ .navbar-brand{
+     display: inline;
+     margin-left: 5%;
+     font-family: cursive;
+     font-size: 2em;
+ }
+ .main{
+     margin-top: 100px;
+ }
+ .text-presentation{
+     width: 85%;
+     margin: 0 auto;
+     
+     justify-content: center;
+     font-size: 1.8em;
+     font-family: 'Courier New', Courier, monospace;
+     color: white;
+ }
+ hr{
+     width: 50%;
+     margin: 0 auto;
+     margin-bottom: 50px;
+ }
+ .container{
+     width: 85%;
+     margin: 0 auto;
+     display: flex;
+ }
+ .container #form {
+     flex: 2;
+     justify-content: center;
+     text-align: center;
+ }
+ .container #result {
+     flex: 5;
+     justify-content: center;
+     align-items: center;
+ }
+ .form-group{
+     margin: 10px 0px;
+ }
+ .form-group label{
+     font-size: 20px;
+     font-weight: bold;
+     color: white;
+ }
+ .form-group input, .form-group select{
+     padding: 10px;
+     display: block;
+     margin: 0 auto;
+ }
+ button{
+     padding: 0.5em 2em;
+ border-radius: 300px;
+
+     border: none;
+     cursor: pointer;
+     font-size: 20px;
+     width: 200px;
+     background-color: hotpink;
+     color: white;
+     transition: all 1s;
+ }
+ button:hover{
+     transform: scale(1.1);
+     background-color: orchid;
+ }
+ footer{
+     margin-top: 2em;
+     text-align: center;
+     font-size: 1.8em;
+     font-family: 'Courier New', Courier, monospace;
+     color: white;
+ }
+ @media screen and (max-width: 500px){
+     .text-presentation{
+     width: 100%;
+ }
+     .container{
+     display: block;
+ }
+ }
+
+ #afterRequest {
+     background-color: black;
+     display: flex;
+     flex-direction: row;
+     height: 100%;
+ }
+
+ #afterRequest #impact{
+    background-color: red;
+    flex: 1;
+}
+#afterRequest #sevreImpact{
+    background-color: blue;
+    flex: 1;
+}
+
+#afterRequest #error{
+    display: none;
+    font-size: 3em;
+    font-family: 'Courier New', Courier, monospace;
+    color: red;
+}
