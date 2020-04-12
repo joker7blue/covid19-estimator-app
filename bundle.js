@@ -26,7 +26,7 @@ const normalizePeriod = (period, timeToElapse) => {
       break;
   }
 
-  return nbreDays;
+  return Math.trunc(nbreDays);
 };
 
 const covid19ImpactEstimator = data => {
@@ -34,12 +34,12 @@ const covid19ImpactEstimator = data => {
   const time = normalizePeriod(data.periodType, data.timeToElapse);
   /** Impact computation */
 
-  const impactCurrentlyInfected = data.reportedCases * 10;
-  const impactInfectionsByRequestedTime = impactCurrentlyInfected * 2 ** Math.floor(time / 3);
-  const impactSevereCasesByRequestedTime = Math.ceil(impactInfectionsByRequestedTime * 0.15);
-  const impactHospitalBedsByRequestedTime = Math.ceil(data.totalHospitalBeds * 0.35) - impactSevereCasesByRequestedTime;
-  const impactCasesForICUByRequestedTime = Math.floor(impactInfectionsByRequestedTime * 0.05);
-  const impactCasesForVentilatorsByRequestedTime = Math.floor(impactInfectionsByRequestedTime * 0.02);
+  const impactCurrentlyInfected = Math.trunc(data.reportedCases * 10);
+  const impactInfectionsByRequestedTime = Math.trunc(impactCurrentlyInfected * 2 ** Math.trunc(time / 3));
+  const impactSevereCasesByRequestedTime = Math.trunc(impactInfectionsByRequestedTime * 0.15);
+  const impactHospitalBedsByRequestedTime = Math.trunc(data.totalHospitalBeds * 0.35 - impactInfectionsByRequestedTime * 0.15);
+  const impactCasesForICUByRequestedTime = Math.trunc(impactInfectionsByRequestedTime * 0.05);
+  const impactCasesForVentilatorsByRequestedTime = Math.trunc(impactInfectionsByRequestedTime * 0.02);
   const impactDollarsInFlight = impactInfectionsByRequestedTime * data.region.avgDailyIncomePopulation * data.region.avgDailyIncomeInUSD / time;
   const impact = {
     currentlyInfected: impactCurrentlyInfected,
@@ -52,12 +52,12 @@ const covid19ImpactEstimator = data => {
   };
   /** Severe Impact computation */
 
-  const severeimpactCurrentlyInfected = data.reportedCases * 50;
-  const severeimpactInfectionsByRequestedTime = severeimpactCurrentlyInfected * 2 ** Math.floor(time / 3);
-  const severeimpactSevereCasesByRequestedTime = Math.ceil(severeimpactInfectionsByRequestedTime * 0.15);
-  const severeImpactHospitalBedsByRequestedTime = Math.ceil(data.totalHospitalBeds * 0.35) - severeimpactSevereCasesByRequestedTime;
-  const severeimpactCasesForICUByRequestedTime = Math.floor(severeimpactInfectionsByRequestedTime * 0.05);
-  const severeimpactCasesForVentilatorsByRequestedTime = Math.floor(severeimpactInfectionsByRequestedTime * 0.02);
+  const severeimpactCurrentlyInfected = Math.trunc(data.reportedCases * 50);
+  const severeimpactInfectionsByRequestedTime = Math.trunc(severeimpactCurrentlyInfected * 2 ** Math.trunc(time / 3));
+  const severeimpactSevereCasesByRequestedTime = Math.trunc(severeimpactInfectionsByRequestedTime * 0.15);
+  const severeImpactHospitalBedsByRequestedTime = Math.trunc(data.totalHospitalBeds * 0.35 - severeimpactInfectionsByRequestedTime * 0.15);
+  const severeimpactCasesForICUByRequestedTime = Math.trunc(severeimpactInfectionsByRequestedTime * 0.05);
+  const severeimpactCasesForVentilatorsByRequestedTime = Math.trunc(severeimpactInfectionsByRequestedTime * 0.02);
   const severeimpactDollarsInFlight = severeimpactInfectionsByRequestedTime * data.region.avgDailyIncomePopulation * data.region.avgDailyIncomeInUSD / time;
   const severeImpact = {
     currentlyInfected: severeimpactCurrentlyInfected,
@@ -88,13 +88,16 @@ var _estimator = _interopRequireDefault(require("./estimator"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const submitBtn = document.getElementById('submitBtn');
+const impactDiv = document.getElementById('impact');
+const severeImpactDiv = document.getElementById('sevreImpact');
+const errorDiv = document.getElementById('error');
 submitBtn.addEventListener('click', () => {
   const population = Number(document.getElementById('population').value);
   const timeToElapse = Number(document.getElementById('timeToElapse').value);
   const reportedCases = Number(document.getElementById('reportedCases').value);
   const totalHospitalBeds = Number(document.getElementById('totalHospitalBeds').value);
   const periodType = document.getElementById('periodType').value;
-  const result = (0, _estimator.default)({
+  const toSend = {
     population,
     timeToElapse,
     reportedCases,
@@ -106,8 +109,45 @@ submitBtn.addEventListener('click', () => {
       avgDailyIncomeInUSD: 4,
       avgDailyIncomePopulation: 0.73
     }
-  });
-  console.log(result); // console.log({ population, timeToElapse, reportedCases, totalHospitalBeds, periodType });
+  };
+  /* const result = covid19ImpactEstimator({
+    population,
+    timeToElapse,
+    reportedCases,
+    totalHospitalBeds,
+    periodType,
+    region: {
+      name: 'Africa',
+      avgAge: 19.7,
+      avgDailyIncomeInUSD: 4,
+      avgDailyIncomePopulation: 0.73
+    }
+  }); */
+
+  errorDiv.style.display = 'none';
+  fetch('https://covid19-estimator-backend.herokuapp.com/api/v1/on-covid-19/json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      mode: 'no-cors',
+      'Sec-Fetch-Mode': 'no-cors'
+    },
+    body: JSON.stringify(toSend)
+  }).then(response => response.json()).then(dataResponse => {
+    errorDiv.style.display = 'none';
+    Object.keys(dataResponse.impact).forEach(key => {
+      const element = document.createElement('div');
+      const b = document.createElement('b');
+      const span = document.createElement('span');
+      b.textContent = key;
+      span.textContent = dataResponse.impact[key];
+      element.appendChild(b).appendChild(span);
+      impactDiv.appendChild(element);
+    });
+    console.log(impactDiv);
+  }).catch(err => {
+    errorDiv.style.display = 'block';
+  }); // console.log({ population, timeToElapse, reportedCases, totalHospitalBeds, periodType });
 });
 
 },{"./estimator":1}]},{},[1,2]);
